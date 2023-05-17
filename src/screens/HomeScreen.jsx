@@ -61,7 +61,7 @@ const HomeScreen = () => {
 
     /*
         * Return Component
-        * @returns {JSX}
+        * @returns {JSX} - HomeScreen
     */
     return (
         <View style={styles.container}>
