@@ -31,33 +31,32 @@ const BuscarFruta = () => {
         * States Component
         * @returns {object}
     */
-    const [getNameProduct, setNameProduct] = useState('');
-    const [getProduct, setProduct] = useState([]);
+    const [getNameFruit, setNameFruit] = useState('');
+    const [getFruit, setFruit] = useState([]);
     
     /*
-        * Query Products
+        * Query Fruits
         * @returns {name}
     */
-    async function queryProducts(name = null) {
+    async function queryFruit(name = null) {
         try{
-            const ref = collection(db, 'produtos');
-            const queryRef = query(ref, where('nomeDoProduto', '==', name));
-            const querySnapshot = await getDocs(queryRef);
+            const queryList = query(collection(db, 'frutas'), where('nomeDaFruta', '==', name));
+            const queryResult = await getDocs(queryList);
             
-            const product = [];
-            querySnapshot.forEach((doc) => {
-                product.push(doc.data());
+            const fruit = [];
+            queryResult.forEach((doc) => {
+                fruit.push(doc.data());
             });
 
-            setProduct(product);
+            setFruit(fruit);
         }catch (error) {
             console.log(error);
         }
     };
 
     useEffect(() => {
-        queryProducts(getNameProduct);
-    }, [getNameProduct]);
+        queryFruit(getNameFruit);
+    }, [getNameFruit]);
 
     /*
         * Return Component
@@ -65,18 +64,26 @@ const BuscarFruta = () => {
     */
     return (
         <View style={styles.container}>
-            <View style={styles.content}>
-                <Text style={styles.title}>Pesquise pelo nome do(s) fruta(s)</Text>
+            <View style={styles.modalContainer}>
+                <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
+                <View style={styles.modalContent}>
+                    <FlatList data={[
+                        {name: '• Banana'},
+                        {name: '• Kiwi'},
+                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
+                    />
+                </View>
             </View>
             <View style={styles.content}>
-                <TextInput label='Nome do Fruta' value={getNameProduct} onChangeText={setNameProduct} />
+                <Text style={[styles.title, styles.bold]}>Insira um nome listado a cima:</Text>
             </View>
             <View style={styles.content}>
-                <FlatList data={getProduct} renderItem={({item}) => (
+                <TextInput label='Nome do Fruta' value={getNameFruit} onChangeText={setNameFruit} />
+            </View>
+            <View style={styles.content}>
+                <FlatList data={getFruit} renderItem={({item}) => (
                     <View>
-                        <Text style={styles.bold}>Nome: {item.nomeDoProduto}</Text>
-                        <Text style={styles.bold}>Quantidade: {item.quantidadeDoProduto}</Text>
-                        <Text style={styles.bold}>Preço: R${item.precoDoProduto.toLocaleString('en-PT')}</Text>
+                        <Text style={styles.bold}>Nome: {item.nomeDaFruta}</Text>
                     </View>
                 )} key={(item) => item.id} />
             </View>

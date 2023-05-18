@@ -31,33 +31,32 @@ const BuscarPessoa = () => {
         * States Component
         * @returns {object}
     */
-    const [getNameProduct, setNameProduct] = useState('');
-    const [getProduct, setProduct] = useState([]);
+    const [getNamePerson, setNamePerson] = useState('');
+    const [getPerson, setPerson] = useState([]);
     
     /*
-        * Query Products
+        * Query Persons
         * @returns {name}
     */
-    async function queryProducts(name = null) {
+    async function queryPerson(name = null) {
         try{
-            const ref = collection(db, 'produtos');
-            const queryRef = query(ref, where('nomeDoProduto', '==', name));
-            const querySnapshot = await getDocs(queryRef);
+            const queryList = query(collection(db, 'pessoa'), where('nomeDaPessoa', '==', name));
+            const queryResult = await getDocs(queryList);
             
-            const product = [];
-            querySnapshot.forEach((doc) => {
-                product.push(doc.data());
+            const person = [];
+            queryResult.forEach((doc) => {
+                person.push(doc.data());
             });
 
-            setProduct(product);
+            setPerson(person);
         }catch (error) {
             console.log(error);
         }
     };
 
     useEffect(() => {
-        queryProducts(getNameProduct);
-    }, [getNameProduct]);
+        queryPerson(getNamePerson);
+    }, [getNamePerson]);
 
     /*
         * Return Component
@@ -65,18 +64,27 @@ const BuscarPessoa = () => {
     */
     return (
         <View style={styles.container}>
-            <View style={styles.content}>
-                <Text style={styles.title}>Pesquise pelo nome do(s) pessoa(s)</Text>
+            <View style={styles.modalContainer}>
+                <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
+                <View style={styles.modalContent}>
+                    <FlatList data={[
+                        {name: '• Gustavo'},
+                        {name: '• Jair M. Bolsonaro'},
+                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
+                    />
+                </View>
             </View>
             <View style={styles.content}>
-                <TextInput label='Nome da Pessoa' value={getNameProduct} onChangeText={setNameProduct} />
+                <Text style={[styles.title, styles.bold]}>Insira um nome listado a cima:</Text>
             </View>
             <View style={styles.content}>
-                <FlatList data={getProduct} renderItem={({item}) => (
+                <TextInput label='Nome da Pessoa' value={getNamePerson} onChangeText={setNamePerson} />
+            </View>
+            <View style={styles.content}>
+                <FlatList data={getPerson} renderItem={({item}) => (
                     <View>
-                        <Text style={styles.bold}>Nome: {item.nomeDoProduto}</Text>
-                        <Text style={styles.bold}>Quantidade: {item.quantidadeDoProduto}</Text>
-                        <Text style={styles.bold}>Preço: R${item.precoDoProduto.toLocaleString('en-PT')}</Text>
+                        <Text style={styles.bold}>Nome: {item.nomeDaPessoa}</Text>
+                        <Text style={styles.bold}>Idade: {item.idadeDaPessoa}</Text>
                     </View>
                 )} key={(item) => item.id} />
             </View>

@@ -7,24 +7,24 @@ import styles from '../utils/styles';
 const HomeScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Paginas de Procura:</Text>
+            <Text style={[styles.title, styles.bold]}>Paginas de Procura ❓</Text>
             <View style={styles.content}>
-                <Button mode="contained" onPress={() => navigation.navigate('Buscar Cor')}>Buscar Cor</Button>
+                <Button style={{width: '50vw'}} mode='contained' onPress={() => navigation.navigate('Buscar Cor')}>Procurar Cor</Button>
             </View>
             <View style={styles.content}>
-                <Button mode="contained" onPress={() => navigation.navigate('Buscar Carro')}>Buscar Carro</Button>
+                <Button style={{width: '50vw'}} mode='contained' onPress={() => navigation.navigate('Buscar Carro')}>Procurar Carro</Button>
             </View>
             <View style={styles.content}>
-                <Button mode="contained" onPress={() => navigation.navigate('Buscar Pessoa')}>Buscar Pessoa</Button>
+                <Button style={{width: '50vw'}} mode='contained' onPress={() => navigation.navigate('Buscar Pessoa')}>Procurar Pessoa</Button>
             </View>
             <View style={styles.content}>
-                <Button mode="contained" onPress={() => navigation.navigate('Buscar Fruta')}>Buscar Fruta</Button>
+                <Button style={{width: '50vw'}} mode='contained' onPress={() => navigation.navigate('Buscar Fruta')}>Procurar Fruta</Button>
             </View>
             <View style={styles.content}>
-                <Button mode="contained" onPress={() => navigation.navigate('Buscar Produto')}>Buscar Produto</Button>
+                <Button style={{width: '50vw'}} mode='contained' onPress={() => navigation.navigate('Buscar Produto')}>Procurar Produto</Button>
             </View>
             <View style={styles.content}>
-                <Button mode="contained" onPress={() => navigation.navigate('Buscar Animal')}>Buscar Animal</Button>
+                <Button style={{width: '50vw'}} mode='contained' onPress={() => navigation.navigate('Buscar Animal')}>Procurar Animal</Button>
             </View>
         </View>
     );

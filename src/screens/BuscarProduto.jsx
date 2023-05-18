@@ -65,8 +65,18 @@ const BuscarProduto = () => {
     */
     return (
         <View style={styles.container}>
+            <View style={styles.modalContainer}>
+                <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
+                <View style={styles.modalContent}>
+                    <FlatList data={[
+                        {name: '• Carro'},
+                        {name: '• Banana'},
+                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
+                    />
+                </View>
+            </View>
             <View style={styles.content}>
-                <Text style={styles.title}>Pesquise pelo nome do(s) produto(s)</Text>
+                <Text style={[styles.title, styles.bold]}>Insira um nome listado a cima:</Text>
             </View>
             <View style={styles.content}>
                 <TextInput label='Nome do Produto' value={getNameProduct} onChangeText={setNameProduct} />

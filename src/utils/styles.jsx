@@ -13,6 +13,10 @@ const styles = StyleSheet.create({
     },
     title:{
       fontSize: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: 'rgb(103, 80, 164)',
+      paddingBottom: 2,
+      marginBottom: 10,
     },
     content:{
       textAlign: 'center',
@@ -20,6 +24,16 @@ const styles = StyleSheet.create({
     },
     bold:{
       fontWeight: 'bold',
+    },
+    modalContainer:{
+      backgroundColor: 'rgba(103, 80, 164, .1)',
+      borderRadius: '5px',
+      padding: '10px',
+      textAlign: 'left',
+      width: '50%',
+    },
+    li:{
+      textDecorationStyle: 'dotted',
     }
   }
 );

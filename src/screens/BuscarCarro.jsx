@@ -31,33 +31,32 @@ const BuscarCarro = () => {
         * States Component
         * @returns {object}
     */
-    const [getNameProduct, setNameProduct] = useState('');
-    const [getProduct, setProduct] = useState([]);
+    const [getNameCar, setNameCar] = useState('');
+    const [getCar, setCar] = useState([]);
     
     /*
-        * Query Products
+        * Query Cars
         * @returns {name}
     */
-    async function queryProducts(name = null) {
+    async function queryCar(name = null) {
         try{
-            const ref = collection(db, 'carros');
-            const queryRef = query(ref, where('nomeDoCarro', '==', name));
-            const querySnapshot = await getDocs(queryRef);
+            const queryList = query(collection(db, 'carros'), where('nomeDoCarro', '==', name));
+            const queryResult = await getDocs(queryList);
             
-            const product = [];
-            querySnapshot.forEach((doc) => {
-                product.push(doc.data());
+            const cars = [];
+            queryResult.forEach((doc) => {
+                cars.push(doc.data());
             });
 
-            setProduct(product);
+            setCar(cars);
         }catch (error) {
             console.log(error);
         }
     };
 
     useEffect(() => {
-        queryProducts(getNameProduct);
-    }, [getNameProduct]);
+        queryCar(getNameCar);
+    }, [getNameCar]);
 
     /*
         * Return Component
@@ -65,14 +64,24 @@ const BuscarCarro = () => {
     */
     return (
         <View style={styles.container}>
-            <View style={styles.content}>
-                <Text style={styles.title}>Pesquise pelo nome do(s) carro(s)</Text>
+            <View style={styles.modalContainer}>
+                <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
+                <View style={styles.modalContent}>
+                    <FlatList data={[
+                        {name: '• Siena'},
+                        {name: '• Gol'},
+                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
+                    />
+                </View>
             </View>
             <View style={styles.content}>
-                <TextInput label='Nome do Carro' value={getNameProduct} onChangeText={setNameProduct} />
+                <Text style={[styles.title, styles.bold]}>Insira um nome listado a cima:</Text>
             </View>
             <View style={styles.content}>
-                <FlatList data={getProduct} renderItem={({item}) => (
+                <TextInput label='Nome do Carro' value={getNameCar} onChangeText={setNameCar} />
+            </View>
+            <View style={styles.content}>
+                <FlatList data={getCar} renderItem={({item}) => (
                     <View>
                         <Text style={styles.bold}>Nome: {item.nomeDoCarro}</Text>
                         <Text style={styles.bold}>Modelo: {item.modeloDoCarro}</Text>

@@ -31,33 +31,32 @@ const BuscarAnimal = () => {
         * States Component
         * @returns {object}
     */
-    const [getNameProduct, setNameProduct] = useState('');
-    const [getProduct, setProduct] = useState([]);
+    const [getNameAnimal, setNameAnimal] = useState('');
+    const [getAnimal, setAnimal] = useState([]);
     
     /*
-        * Query Products
+        * Query animals
         * @returns {name}
     */
-    async function queryProducts(name = null) {
+    async function queryAnimals(name = null) {
         try{
-            const ref = collection(db, 'animais');
-            const queryRef = query(ref, where('nomeDoAnimal', '==', name));
-            const querySnapshot = await getDocs(queryRef);
+            const queryName = query(collection(db, 'animais'), where('nomeDoAnimal', '==', name));
+            const queryResult = await getDocs(queryName);
             
-            const product = [];
-            querySnapshot.forEach((doc) => {
-                product.push(doc.data());
+            const animal = [];
+            queryResult.forEach((doc) => {
+                animal.push(doc.data());
             });
 
-            setProduct(product);
+            setAnimal(animal);
         }catch (error) {
             console.log(error);
         }
     };
 
     useEffect(() => {
-        queryProducts(getNameProduct);
-    }, [getNameProduct]);
+        queryAnimals(getNameAnimal);
+    }, [getNameAnimal]);
 
     /*
         * Return Component
@@ -65,14 +64,24 @@ const BuscarAnimal = () => {
     */
     return (
         <View style={styles.container}>
-            <View style={styles.content}>
-                <Text style={styles.title}>Pesquise pelo nome do(s) animal</Text>
+            <View style={styles.modalContainer}>
+                <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
+                <View style={styles.modalContent}>
+                    <FlatList data={[
+                        {name: '• Cachorro'},
+                        {name: '• Gato'},
+                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
+                    />
+                </View>
             </View>
             <View style={styles.content}>
-                <TextInput label='Nome do Animal' value={getNameProduct} onChangeText={setNameProduct} />
+                <Text style={[styles.title, styles.bold]}>Insira um nome listado a cima:</Text>
             </View>
             <View style={styles.content}>
-                <FlatList data={getProduct} renderItem={({item}) => (
+                <TextInput label='Nome do Animal' value={getNameAnimal} onChangeText={setNameAnimal} />
+            </View>
+            <View style={styles.content}>
+                <FlatList data={getAnimal} renderItem={({item}) => (
                     <View>
                         <Text style={styles.bold}>Nome: {item.nomeDoAnimal}</Text>
                         <Text style={styles.bold}>Espécie: {item.especieDoAnimal}</Text>
