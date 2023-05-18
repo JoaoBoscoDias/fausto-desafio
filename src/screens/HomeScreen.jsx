@@ -1,91 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text } from 'react-native';
+import { Button } from 'react-native-paper';
 
-/*
-    * Firebase Component
-    * @returns {object}
-*/
-import { db } from '../config/firebase';
-
-/*
-    * Firebase Component
-    * @returns {object}
-*/
-import { collection, query, where, getDocs } from 'firebase/firestore';
-
-/*
-    * Styles Component
-    * @returns {object}
-*/
 import styles from '../utils/styles';
-import { TextInput } from 'react-native-paper';
-import { FlatList } from 'react-native-web';
 
-/*
-    * Functional Component
-    * @returns {JSX}
-*/
-const HomeScreen = () => {
-
-    /*
-        * States Component
-        * @returns {object}
-    */
-    const [getNameProduct, setNameProduct] = useState('');
-    const [getProduct, setProduct] = useState([]);
-    
-    /*
-        * Query Products
-        * @returns {name}
-    */
-    async function queryProducts(name = null) {
-        try{
-            const ref = collection(db, 'produtos');
-            const queryRef = query(ref, where('nomeDoProduto', '==', name));
-            const querySnapshot = await getDocs(queryRef);
-            
-            const product = [];
-            querySnapshot.forEach((doc) => {
-                product.push(doc.data());
-            });
-
-            setProduct(product);
-        }catch (error) {
-            console.log(error);
-        }
-    };
-
-    useEffect(() => {
-        queryProducts(getNameProduct);
-    }, [getNameProduct]);
-
-    /*
-        * Return Component
-        * @returns {JSX} - HomeScreen
-    */
+const HomeScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Paginas de Procura:</Text>
             <View style={styles.content}>
-                <Text style={styles.title}>Pesquise pelo nome do(s) produto(s)</Text>
+                <Button mode="contained" onPress={() => navigation.navigate('Buscar Cor')}>Buscar Cor</Button>
             </View>
             <View style={styles.content}>
-                <TextInput label='Nome do Produto' value={getNameProduct} onChangeText={setNameProduct} />
+                <Button mode="contained" onPress={() => navigation.navigate('Buscar Carro')}>Buscar Carro</Button>
             </View>
             <View style={styles.content}>
-                <FlatList data={getProduct} renderItem={({item}) => (
-                    <View>
-                        <Text style={styles.bold}>Nome: {item.nomeDoProduto}</Text>
-                        <Text style={styles.bold}>Quantidade: {item.quantidadeDoProduto}</Text>
-                        <Text style={styles.bold}>Preço: R${item.precoDoProduto.toLocaleString('en-PT')}</Text>
-                    </View>
-                )} key={(item) => item.id} />
+                <Button mode="contained" onPress={() => navigation.navigate('Buscar Pessoa')}>Buscar Pessoa</Button>
+            </View>
+            <View style={styles.content}>
+                <Button mode="contained" onPress={() => navigation.navigate('Buscar Fruta')}>Buscar Fruta</Button>
+            </View>
+            <View style={styles.content}>
+                <Button mode="contained" onPress={() => navigation.navigate('Buscar Produto')}>Buscar Produto</Button>
+            </View>
+            <View style={styles.content}>
+                <Button mode="contained" onPress={() => navigation.navigate('Buscar Animal')}>Buscar Animal</Button>
             </View>
         </View>
-    )
+    );
 };
 
-/*
-    * Exporting Component
-    * @returns {JSX}
-*/
 export default HomeScreen;
