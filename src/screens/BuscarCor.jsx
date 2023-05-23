@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { db } from '../config/firebase';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
-/*
+/**
     * Styles Component
     * @returns {object}
 */
@@ -21,20 +21,21 @@ import styles from '../utils/styles';
 import { TextInput } from 'react-native-paper';
 import { FlatList } from 'react-native-web';
 
-/*
+/**
     * Functional Component
     * @returns {JSX}
 */
 const BuscarCor = () => {
 
-    /*
+    /**
         * States Component
         * @returns {object}
     */
     const [getNameColor, setNameColor] = useState('');
     const [getColor, setColor] = useState([]);
+    const [getAllColors, setAllColors] = useState([]);
     
-    /*
+    /**
         * Query Colors
         * @returns {name}
     */
@@ -54,11 +55,32 @@ const BuscarCor = () => {
         }
     };
 
+    /** 
+     * Query All Colors
+     * @returns {name}
+    */
+    async function queryAllColors() {
+        try{
+            const allList = query(collection(db, 'cores'));
+            const queryAllResult = await getDocs(allList);
+
+            const allNames = [];
+            queryAllResult.forEach((doc) => {
+                allNames.push(doc.data());
+            });
+            
+            setAllColors(allNames);
+        }catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
         queryColor(getNameColor);
+        queryAllColors();
     }, [getNameColor]);
 
-    /*
+    /**
         * Return Component
         * @returns {JSX} - BuscarCor
     */
@@ -67,11 +89,9 @@ const BuscarCor = () => {
             <View style={styles.modalContainer}>
                 <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
                 <View style={styles.modalContent}>
-                    <FlatList data={[
-                        {name: '• Amarelo'},
-                        {name: '• Verde'},
-                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
-                    />
+                    <FlatList data={getAllColors} renderItem={({item}) => (
+                        <Text style={styles.item}>• {item.nomeDaCor}</Text>
+                    )} key={(item) => item.id} />
                 </View>
             </View>
             <View style={styles.content}>
@@ -92,7 +112,7 @@ const BuscarCor = () => {
     )
 };
 
-/*
+/**
     * Exporting Component
     * @returns {JSX}
 */

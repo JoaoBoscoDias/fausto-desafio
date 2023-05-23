@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { db } from '../config/firebase';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
-/*
+/**
     * Styles Component
     * @returns {object}
 */
@@ -21,20 +21,21 @@ import styles from '../utils/styles';
 import { TextInput } from 'react-native-paper';
 import { FlatList } from 'react-native-web';
 
-/*
+/**
     * Functional Component
     * @returns {JSX}
 */
 const BuscarPessoa = () => {
 
-    /*
+    /**
         * States Component
         * @returns {object}
     */
     const [getNamePerson, setNamePerson] = useState('');
     const [getPerson, setPerson] = useState([]);
+    const [getAllPersons, setAllPersons] = useState([]);
     
-    /*
+    /**
         * Query Persons
         * @returns {name}
     */
@@ -54,11 +55,36 @@ const BuscarPessoa = () => {
         }
     };
 
+    /** 
+     * Query All Persons
+     * @returns {name}
+    */
+    async function queryAllPersons() {
+        try{
+            const allList = query(collection(db, 'pessoa'));
+            const queryAllResult = await getDocs(allList);
+
+            const allNames = [];
+            queryAllResult.forEach((doc) => {
+                allNames.push(doc.data());
+            });
+            
+            setAllPersons(allNames);
+        }catch (error) {
+            console.log(error);
+        }
+    };
+
+    /**
+     * UseEffect Component
+     * @returns {object}
+    */
     useEffect(() => {
         queryPerson(getNamePerson);
+        queryAllPersons();
     }, [getNamePerson]);
 
-    /*
+    /**
         * Return Component
         * @returns {JSX} - BuscarPessoa
     */
@@ -67,11 +93,9 @@ const BuscarPessoa = () => {
             <View style={styles.modalContainer}>
                 <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
                 <View style={styles.modalContent}>
-                    <FlatList data={[
-                        {name: '• Gustavo'},
-                        {name: '• Jair M. Bolsonaro'},
-                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
-                    />
+                    <FlatList data={getAllPersons} renderItem={({item}) => (
+                        <Text style={styles.item}>• {item.nomeDaPessoa}</Text>
+                    )} key={(item) => item.id} />
                 </View>
             </View>
             <View style={styles.content}>
@@ -92,7 +116,7 @@ const BuscarPessoa = () => {
     )
 };
 
-/*
+/**
     * Exporting Component
     * @returns {JSX}
 */

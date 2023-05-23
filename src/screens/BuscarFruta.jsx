@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { db } from '../config/firebase';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
-/*
+/**
     * Styles Component
     * @returns {object}
 */
@@ -21,20 +21,21 @@ import styles from '../utils/styles';
 import { TextInput } from 'react-native-paper';
 import { FlatList } from 'react-native-web';
 
-/*
+/**
     * Functional Component
     * @returns {JSX}
 */
 const BuscarFruta = () => {
 
-    /*
+    /**
         * States Component
         * @returns {object}
     */
     const [getNameFruit, setNameFruit] = useState('');
     const [getFruit, setFruit] = useState([]);
+    const [getAllFruits, setAllFruits] = useState([]);
     
-    /*
+    /**
         * Query Fruits
         * @returns {name}
     */
@@ -54,11 +55,36 @@ const BuscarFruta = () => {
         }
     };
 
+    /** 
+     * Query All Fruits
+     * @returns {name}
+    */
+    async function queryAllFruits() {
+        try{
+            const allList = query(collection(db, 'frutas'));
+            const queryAllResult = await getDocs(allList);
+
+            const allNames = [];
+            queryAllResult.forEach((doc) => {
+                allNames.push(doc.data());
+            });
+            
+            setAllFruits(allNames);
+        }catch (error) {
+            console.log(error);
+        }
+    };
+
+    /**
+     * UseEffect Component
+     * @returns {object}
+    */
     useEffect(() => {
         queryFruit(getNameFruit);
+        queryAllFruits();
     }, [getNameFruit]);
 
-    /*
+    /**
         * Return Component
         * @returns {JSX} - BuscarFruta
     */
@@ -67,11 +93,9 @@ const BuscarFruta = () => {
             <View style={styles.modalContainer}>
                 <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
                 <View style={styles.modalContent}>
-                    <FlatList data={[
-                        {name: '• Banana'},
-                        {name: '• Kiwi'},
-                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
-                    />
+                    <FlatList data={getAllFruits} renderItem={({item}) => (
+                        <Text style={styles.item}>• {item.nomeDaFruta}</Text>
+                    )} key={(item) => item.id} />
                 </View>
             </View>
             <View style={styles.content}>
@@ -91,7 +115,7 @@ const BuscarFruta = () => {
     )
 };
 
-/*
+/**
     * Exporting Component
     * @returns {JSX}
 */

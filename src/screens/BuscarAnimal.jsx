@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { db } from '../config/firebase';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
-/*
+/**
     * Styles Component
     * @returns {object}
 */
@@ -21,20 +21,21 @@ import styles from '../utils/styles';
 import { TextInput } from 'react-native-paper';
 import { FlatList } from 'react-native-web';
 
-/*
+/**
     * Functional Component
     * @returns {JSX}
 */
 const BuscarAnimal = () => {
 
-    /*
+    /**
         * States Component
         * @returns {object}
     */
     const [getNameAnimal, setNameAnimal] = useState('');
     const [getAnimal, setAnimal] = useState([]);
+    const [getAllAnimals, setAllAnimals] = useState([]);
     
-    /*
+    /**
         * Query animals
         * @returns {name}
     */
@@ -54,11 +55,36 @@ const BuscarAnimal = () => {
         }
     };
 
+    /** 
+     * Query All Animals
+     * @returns {name}
+    */
+    async function queryAllAnimals() {
+        try{
+            const allList = query(collection(db, 'animais'));
+            const queryAllResult = await getDocs(allList);
+
+            const allNames = [];
+            queryAllResult.forEach((doc) => {
+                allNames.push(doc.data());
+            });
+            
+            setAllAnimals(allNames);
+        }catch (error) {
+            console.log(error);
+        }
+    };
+
+    /**
+     * UseEffect Component
+     * @returns {object}
+    */
     useEffect(() => {
         queryAnimals(getNameAnimal);
+        queryAllAnimals()
     }, [getNameAnimal]);
 
-    /*
+    /**
         * Return Component
         * @returns {JSX} - BuscarAnimal
     */
@@ -67,11 +93,9 @@ const BuscarAnimal = () => {
             <View style={styles.modalContainer}>
                 <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
                 <View style={styles.modalContent}>
-                    <FlatList data={[
-                        {name: '• Cachorro'},
-                        {name: '• Gato'},
-                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
-                    />
+                    <FlatList data={getAllAnimals} renderItem={({item}) => (
+                        <Text style={styles.item}>• {item.nomeDoAnimal}</Text>
+                    )} key={(item) => item.id} />
                 </View>
             </View>
             <View style={styles.content}>
@@ -92,7 +116,7 @@ const BuscarAnimal = () => {
     )
 };
 
-/*
+/**
     * Exporting Component
     * @returns {JSX}
 */

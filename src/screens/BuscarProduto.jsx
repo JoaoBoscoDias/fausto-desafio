@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { db } from '../config/firebase';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
-/*
+/**
     * Styles Component
     * @returns {object}
 */
@@ -21,20 +21,21 @@ import styles from '../utils/styles';
 import { TextInput } from 'react-native-paper';
 import { FlatList } from 'react-native-web';
 
-/*
+/**
     * Functional Component
     * @returns {JSX}
 */
 const BuscarProduto = () => {
 
-    /*
+    /**
         * States Component
         * @returns {object}
     */
     const [getNameProduct, setNameProduct] = useState('');
     const [getProduct, setProduct] = useState([]);
+    const [getAllProducts, setAllProducts] = useState([]);
     
-    /*
+    /**
         * Query Products
         * @returns {name}
     */
@@ -55,11 +56,36 @@ const BuscarProduto = () => {
         }
     };
 
+    /** 
+     * Query All Products
+     * @returns {name}
+    */
+    async function queryAllProducts() {
+        try{
+            const allList = query(collection(db, 'produtos'));
+            const queryAllResult = await getDocs(allList);
+
+            const allNames = [];
+            queryAllResult.forEach((doc) => {
+                allNames.push(doc.data());
+            });
+            
+            setAllProducts(allNames);
+        }catch (error) {
+            console.log(error);
+        }
+    };
+
+    /**
+     * UseEffect Component
+     * @returns {object}
+    */
     useEffect(() => {
         queryProducts(getNameProduct);
+        queryAllProducts();
     }, [getNameProduct]);
 
-    /*
+    /**
         * Return Component
         * @returns {JSX} - BuscarProduto
     */
@@ -68,11 +94,9 @@ const BuscarProduto = () => {
             <View style={styles.modalContainer}>
                 <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
                 <View style={styles.modalContent}>
-                    <FlatList data={[
-                        {name: '• Carro'},
-                        {name: '• Banana'},
-                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
-                    />
+                    <FlatList data={getAllProducts} renderItem={({item}) => (
+                        <Text style={styles.item}>• {item.nomeDoProduto}</Text>
+                    )} key={(item) => item.id} />
                 </View>
             </View>
             <View style={styles.content}>
@@ -94,7 +118,7 @@ const BuscarProduto = () => {
     )
 };
 
-/*
+/**
     * Exporting Component
     * @returns {JSX}
 */

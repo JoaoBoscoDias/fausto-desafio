@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { db } from '../config/firebase';
 
-/*
+/**
     * Firebase Component
     * @returns {object}
 */
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
-/*
+/**
     * Styles Component
     * @returns {object}
 */
@@ -21,20 +21,21 @@ import styles from '../utils/styles';
 import { TextInput } from 'react-native-paper';
 import { FlatList } from 'react-native-web';
 
-/*
+/**
     * Functional Component
     * @returns {JSX}
 */
 const BuscarCarro = () => {
 
-    /*
+    /**
         * States Component
         * @returns {object}
     */
     const [getNameCar, setNameCar] = useState('');
     const [getCar, setCar] = useState([]);
+    const [getAllCars, setAllCars] = useState([]);
     
-    /*
+    /**
         * Query Cars
         * @returns {name}
     */
@@ -54,11 +55,36 @@ const BuscarCarro = () => {
         }
     };
 
+    /** 
+     * Query All Cars
+     * @returns {name}
+    */
+    async function queryAllCars() {
+        try{
+            const allList = query(collection(db, 'carros'));
+            const queryAllResult = await getDocs(allList);
+
+            const allNames = [];
+            queryAllResult.forEach((doc) => {
+                allNames.push(doc.data());
+            });
+            
+            setAllCars(allNames);
+        }catch (error) {
+            console.log(error);
+        }
+    };
+    
+    /**
+     * UseEffect Component
+     * @returns {object}
+    */
     useEffect(() => {
         queryCar(getNameCar);
+        queryAllCars();
     }, [getNameCar]);
 
-    /*
+    /**
         * Return Component
         * @returns {JSX} - BuscarCarro
     */
@@ -67,11 +93,9 @@ const BuscarCarro = () => {
             <View style={styles.modalContainer}>
                 <Text style={[styles.bold, {marginBottom: '5px'}]}>Nome(s):</Text>
                 <View style={styles.modalContent}>
-                    <FlatList data={[
-                        {name: '• Siena'},
-                        {name: '• Gol'},
-                        ]} renderItem={({item}) => <Text style={styles.item}>{item.name}</Text>}
-                    />
+                    <FlatList data={getAllCars} renderItem={({item}) => (
+                        <Text style={styles.item}>• {item.nomeDoCarro}</Text>
+                    )} key={(item) => item.id} />
                 </View>
             </View>
             <View style={styles.content}>
@@ -92,7 +116,7 @@ const BuscarCarro = () => {
     )
 };
 
-/*
+/**
     * Exporting Component
     * @returns {JSX}
 */

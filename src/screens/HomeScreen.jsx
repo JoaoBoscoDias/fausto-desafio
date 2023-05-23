@@ -1,9 +1,31 @@
+/**
+ * External Dependencies
+ * @returns {object}
+*/
 import React from 'react';
+
+/**
+ * React Native Components
+ * @returns {object}
+*/
 import { View, Text } from 'react-native';
+
+/**
+ * Styles Component
+ * @returns {object}
+*/
 import { Button } from 'react-native-paper';
 
+/**
+ * Styles Component
+ * @returns {object}
+*/
 import styles from '../utils/styles';
 
+/**
+ * Functional Component
+ * @returns {JSX}
+*/
 const HomeScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
@@ -30,4 +52,9 @@ const HomeScreen = ({navigation}) => {
     );
 };
 
+
+/**
+    * Export default
+    * @returns {function}
+*/
 export default HomeScreen;
